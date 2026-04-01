@@ -1,25 +1,32 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, RootModel, model_validator
 
 
 class SubItem(BaseModel):
-    src: str
+    file: Optional[str] = None
     label: str
-    land: str
-    default: bool
+    kind: str = "captions"
+
+    @model_validator(mode="before")
+    @classmethod
+    def handle_src_or_file(cls, data):
+        if isinstance(data, dict):
+            if data.get("src") is not None and data.get("file") is None:
+                data["file"] = data["src"]
+            elif data.get("file") is not None and data.get("src") is None:
+                data["file"] = data["file"]
+        return data
 
 
-class Sub(BaseModel):
-    __root__: List[SubItem]
-
+class Sub(RootModel[List[SubItem]]):
     def __iter__(self):
-        return iter(self.__root__)
+        return iter(self.root)
 
     def __getitem__(self, item):
-        return self.__root__[item]
+        return self.root[item]
 
     def __len__(self) -> int:
-        return len(self.__root__)
+        return len(self.root)

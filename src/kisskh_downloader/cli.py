@@ -21,7 +21,9 @@ load_dotenv()
 @click.group()
 @click.option("-v", "--verbose", count=True, help="Increase log level verbosity")
 def kisskh(verbose):
-    logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO)
+    logging.basicConfig(
+        format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO
+    )
     if verbose == 1:
         logging.getLogger().setLevel(logging.INFO)
     elif verbose >= 2:
@@ -30,8 +32,12 @@ def kisskh(verbose):
 
 @kisskh.command()
 @click.argument("drama_url_or_name")
-@click.option("--first", "-f", type=click.INT, default=1, help="Starting episode number.")
-@click.option("--last", "-l", type=click.INT, default=sys.maxsize, help="Ending episode number.")
+@click.option(
+    "--first", "-f", type=click.INT, default=1, help="Starting episode number."
+)
+@click.option(
+    "--last", "-l", type=click.INT, default=sys.maxsize, help="Ending episode number."
+)
 @click.option(
     "--quality",
     "-q",
@@ -89,10 +95,14 @@ def dl(
             "Either pass them or set them via KISSKH_KEY and KISSKH_INITIALIZATION_VECTOR environment variable."
         )
 
-    decrypter = SubtitleDecrypter(key=key, initialization_vector=initialization_vector) if decrypt_subtitle else None
+    decrypter = (
+        SubtitleDecrypter(key=key, initialization_vector=initialization_vector)
+        if decrypt_subtitle
+        else None
+    )
 
     kisskh_api = KissKHApi()
-    downloader = Downloader(referer="https://kisskh.co")
+    downloader = Downloader(referer="https://kisskh.do")
     episode_ids: Dict[int, int] = {}
     if validators.url(drama_url_or_name):
         parsed_url = urlparse(drama_url_or_name)
@@ -116,7 +126,9 @@ def dl(
         drama_name = drama.title
 
     if not episode_ids:
-        episode_ids = kisskh_api.get_episode_ids(drama_id=drama_id, start=first, stop=last)
+        episode_ids = kisskh_api.get_episode_ids(
+            drama_id=drama_id, start=first, stop=last
+        )
 
     for episode_number, episode_id in episode_ids.items():  # type: ignore
         logger.info(f"Getting details for Episode {episode_number}...")

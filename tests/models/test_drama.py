@@ -36,9 +36,16 @@ def obj() -> Drama:
         "id": 6917,
         "title": "Crash Course in Romance",
     }
-    return Drama.parse_obj(reponse_data)
+    return Drama.model_validate(reponse_data)
 
 
 def test_get_episodes_ids(obj: Drama) -> None:
     assert obj.get_episodes_ids(1, 2) == {1: 116882, 2: 116935}
-    assert obj.get_episodes_ids(6, 11) == {6: 117787, 7: 118201, 8: 118254, 9: 118906, 10: 118960, 11: 119505}
+    assert obj.get_episodes_ids(6, 11) == {
+        6: 117787,
+        7: 118201,
+        8: 118254,
+        9: 118906,
+        10: 118960,
+        11: 119505,
+    }

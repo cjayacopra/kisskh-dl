@@ -17,7 +17,9 @@ class Downloader:
     def __init__(self, referer: str) -> None:
         self.referer = referer
 
-    def download_video_from_stream_url(self, video_stream_url: str, filepath: str, quality: str) -> None:
+    def download_video_from_stream_url(
+        self, video_stream_url: str, filepath: str, quality: str
+    ) -> None:
         """Download a video from stream url
 
         :param video_stream_url: stream url
@@ -37,18 +39,19 @@ class Downloader:
             ydl.download(video_stream_url)
 
     def download_subtitles(
-        self, subtitles: List[SubItem], filepath: str, decrypter: Optional[SubtitleDecrypter] = None
+        self,
+        subtitles: List[SubItem],
+        filepath: str,
+        decrypter: Optional[SubtitleDecrypter] = None,
     ) -> None:
-        """Download subtitles
-
-        :param subtitles: list of all subtitles
-        :param filepath: file path where to download
-        """
         for subtitle in subtitles:
             logger.info(f"Downloading {subtitle.label} sub...")
-            extension = os.path.splitext(urlparse(subtitle.src).path)[-1]
-            response = requests.get(subtitle.src, timeout=60)
-            output_path = Path(f"{filepath}.{subtitle.land}{extension}")
+            extension = os.path.splitext(urlparse(subtitle.file).path)[-1]
+            if not extension:
+                extension = ".vtt"
+            label_clean = subtitle.label.lower().replace(" ", "_")
+            response = requests.get(subtitle.file, timeout=60)
+            output_path = Path(f"{filepath}.{label_clean}{extension}")
             output_path.write_bytes(response.content)
             if decrypter is not None:
                 decrypted_subtitle = decrypter.decrypt_subtitles(output_path)

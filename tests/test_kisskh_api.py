@@ -60,85 +60,99 @@ def test_get_episode_ids(kisskh_api):
         10: 118960,
     }
 
-    kisskh_api._request.assert_called_once_with("https://kisskh.co/api/DramaList/Drama/44377")
+    kisskh_api._request.assert_called_once_with(
+        "https://kisskh-api.onrender.com/info/44377"
+    )
 
-    assert kisskh_api.get_episode_ids(44377, 10, 100) == {10: 118960, 11: 119505, 12: 119566, 13: 119964, 14: 120047}
+    assert kisskh_api.get_episode_ids(44377, 10, 100) == {
+        10: 118960,
+        11: 119505,
+        12: 119566,
+        13: 119964,
+        14: 120047,
+    }
 
 
 def test_get_subtitles(kisskh_api):
     mock_response = MagicMock()
-    mock_response.json.return_value = [
-        {
-            "src": "https://i.filecache.club/mau/d-p-/English-EP12-KinnPorsche-The-Series.srt",
-            "label": "English",
-            "land": "en",
-            "default": False,
-        },
-        {"src": "https://i.filecache.club/mul/km/rsrwxdno.srt", "label": "Khmer", "land": "km", "default": False},
-        {
-            "src": "https://i.filecache.club/mau/d-p-/Bahasa-Indonesia-EP12-KinnPorsche-The-Series.srt",
-            "label": "Indonesia",
-            "land": "id",
-            "default": False,
-        },
-        {
-            "src": "https://i.filecache.club/mau/d-p-/Bahasa-Malaysia-EP12-KinnPorsche-The-Series.srt",
-            "label": "Malay",
-            "land": "ms",
-            "default": False,
-        },
-        {
-            "src": "https://i.filecache.club/mau/d-p-/Arabic-EP12-KinnPorsche-The-Series.srt",
-            "label": "Arabic",
-            "land": "ar",
-            "default": False,
-        },
-    ]
+    mock_response.json.return_value = {
+        "subtitles": [
+            {
+                "file": "https://cdn.kisskh.do/sub/18609.en.vtt",
+                "label": "English",
+                "kind": "captions",
+            },
+            {
+                "file": "https://cdn.kisskh.do/sub/18609.km.vtt",
+                "label": "Khmer",
+                "kind": "captions",
+            },
+            {
+                "file": "https://cdn.kisskh.do/sub/18609.id.vtt",
+                "label": "Indonesia",
+                "kind": "captions",
+            },
+            {
+                "file": "https://cdn.kisskh.do/sub/18609.ms.vtt",
+                "label": "Malay",
+                "kind": "captions",
+            },
+            {
+                "file": "https://cdn.kisskh.do/sub/18609.ar.vtt",
+                "label": "Arabic",
+                "kind": "captions",
+            },
+        ]
+    }
     kisskh_api._request = MagicMock(return_value=mock_response)
 
     assert kisskh_api.get_subtitles(18609, "en", "km", "ar") == [
         SubItem(
-            src="https://i.filecache.club/mau/d-p-/English-EP12-KinnPorsche-The-Series.srt",
+            file="https://cdn.kisskh.do/sub/18609.en.vtt",
             label="English",
-            land="en",
-            default=False,
+            kind="captions",
         ),
-        SubItem(src="https://i.filecache.club/mul/km/rsrwxdno.srt", label="Khmer", land="km", default=False),
         SubItem(
-            src="https://i.filecache.club/mau/d-p-/Arabic-EP12-KinnPorsche-The-Series.srt",
+            file="https://cdn.kisskh.do/sub/18609.km.vtt",
+            label="Khmer",
+            kind="captions",
+        ),
+        SubItem(
+            file="https://cdn.kisskh.do/sub/18609.ar.vtt",
             label="Arabic",
-            land="ar",
-            default=False,
+            kind="captions",
         ),
     ]
 
-    kisskh_api._request.assert_called_once_with("https://kisskh.co/api/Sub/18609")
+    kisskh_api._request.assert_called_once_with(
+        "https://kisskh-api.onrender.com/resolve/18609"
+    )
 
     assert kisskh_api.get_subtitles(18609, "all") == [
         SubItem(
-            src="https://i.filecache.club/mau/d-p-/English-EP12-KinnPorsche-The-Series.srt",
+            file="https://cdn.kisskh.do/sub/18609.en.vtt",
             label="English",
-            land="en",
-            default=False,
+            kind="captions",
         ),
-        SubItem(src="https://i.filecache.club/mul/km/rsrwxdno.srt", label="Khmer", land="km", default=False),
         SubItem(
-            src="https://i.filecache.club/mau/d-p-/Bahasa-Indonesia-EP12-KinnPorsche-The-Series.srt",
+            file="https://cdn.kisskh.do/sub/18609.km.vtt",
+            label="Khmer",
+            kind="captions",
+        ),
+        SubItem(
+            file="https://cdn.kisskh.do/sub/18609.id.vtt",
             label="Indonesia",
-            land="id",
-            default=False,
+            kind="captions",
         ),
         SubItem(
-            src="https://i.filecache.club/mau/d-p-/Bahasa-Malaysia-EP12-KinnPorsche-The-Series.srt",
+            file="https://cdn.kisskh.do/sub/18609.ms.vtt",
             label="Malay",
-            land="ms",
-            default=False,
+            kind="captions",
         ),
         SubItem(
-            src="https://i.filecache.club/mau/d-p-/Arabic-EP12-KinnPorsche-The-Series.srt",
+            file="https://cdn.kisskh.do/sub/18609.ar.vtt",
             label="Arabic",
-            land="ar",
-            default=False,
+            kind="captions",
         ),
     ]
 
@@ -167,10 +181,12 @@ def test_search_dramas_by_query(kisskh_api):
 
     search_result = kisskh_api.search_dramas_by_query("Crash")
 
-    kisskh_api._request.assert_called_once_with("https://kisskh.co/api/DramaList/Search?q=Crash")
+    kisskh_api._request.assert_called_once_with(
+        "https://kisskh-api.onrender.com/search?q=Crash"
+    )
 
     assert search_result == Search(
-        __root__=[
+        root=[
             DramaInfo(
                 episodesCount=16,
                 label="",
@@ -194,15 +210,12 @@ def test_search_dramas_by_query(kisskh_api):
 def test_get_stream_url(kisskh_api):
     mock_response = MagicMock()
     mock_response.json.return_value = {
-        "Video": "https://hls05.hls1.online/hls05/e4b349db73114f317702a1bb1a8d7f93/ep.12.v0.1657615499.720.m3u8",
-        "Video_tmp": "",
-        "ThirdParty": "https://ssbstream.net/e/0334lvognaqc?caption_1=https://sub.dembed1.com&sub_1=English",
-        "Type": 1,
-        "id": None,
-        "dataSaver": None,
-        "a": None,
-        "b": None,
-        "dType": None,
+        "stream": {
+            "Video": "https://hls05.hls1.online/hls05/e4b349db73114f317702a1bb1a8d7f93/ep.12.v0.1657615499.720.m3u8",
+            "BackupVideo": "https://backup.example.com/hls05/e4b349db73114f317702a1bb1a8d7f93/ep.12.v0.1657615499.720.m3u8",
+            "ThirdVideo": None,
+        },
+        "subtitles": [],
     }
     kisskh_api._request = MagicMock(return_value=mock_response)
 
@@ -211,4 +224,6 @@ def test_get_stream_url(kisskh_api):
         == "https://hls05.hls1.online/hls05/e4b349db73114f317702a1bb1a8d7f93/ep.12.v0.1657615499.720.m3u8"
     )
 
-    kisskh_api._request.assert_called_once_with("https://kisskh.co/api/DramaList/Episode/13915.png?err=false&ts=&time=")
+    kisskh_api._request.assert_called_once_with(
+        "https://kisskh-api.onrender.com/resolve/13915"
+    )

@@ -1,35 +1,60 @@
 # :tv: kisskh-dl
 
 <div align="center">
-   <img src="https://i.imgur.com/nhQtOZa.png">
    <br>
-   <strong><i>Simple downloaded for https://kisskh.co/</i></strong>
+   <strong><i>Fork of kisskh-dl - Simple downloader for kisskh.co using KissKH Api</i></strong>
    <br>
-   <a href="https://pypi.org/project/kisskh-downloader/">
-   <img src="https://img.shields.io/pypi/v/kisskh-downloader?style=for-the-badge">
-   </a>
-   <img src="https://img.shields.io/github/actions/workflow/status/Dibakarroy1997/kisskh-dl/pull-request.yml?style=for-the-badge">
-   <img src="https://img.shields.io/pypi/dm/kisskh-downloader?style=for-the-badge">
 </div>
 
 ---
 
-👋 Welcome to the kisskh-downloader README! This package is a simple command-line tool for downloading shows from https://kisskh.co/. Here's everything you need to know to get started:
+## Credits
+
+This project is a fork of [kisskh-dl](https://github.com/debakarr/kisskh-dl) by [Debakar Roy](https://github.com/debakarr).
+
+It uses the [KissKH Api](https://github.com/beorgsh/KissKH-Api) by [beorgsh](https://github.com/beorgsh) (forked by [cjayacopra](https://github.com/cjayacopra/KissKH-Api)) to fetch drama information and stream URLs.
+
+---
 
 ## 💻 Installation
 
-To install kisskh-downloader, simply run the following command:
+### Prerequisites
 
-```console
-pip install -U kisskh-downloader
+- [uv](https://github.com/astral-sh/uv) - Fast Python package manager
+
+### Install uv
+
+```bash
+# On macOS / Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# On Windows (PowerShell)
+irm https://astral.sh/uv/install.ps1 | iex
 ```
+
+For more installation options, visit the [uv documentation](https://docs.astral.sh/uv/getting-started/installation/).
+
+### Clone and Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/<your-username>/kisskh-dl.git
+cd kisskh-dl
+
+# Install dependencies
+uv sync
+```
+
+---
 
 ## 📚 Usage
 
-After installing the package, you can use the `kisskh dl` command to download shows from the command line.
+After setting up, use the `kisskh dl` command to download shows from the command line.
+
+> **Note**: Always use `uv run kisskh dl ...` from the project directory. This ensures the correct environment is used.
 
 ```console
-kisskh dl --help
+uv run kisskh dl --help
 Usage: kisskh dl [OPTIONS] DRAMA_URL_OR_NAME
 
 Options:
@@ -40,24 +65,21 @@ Options:
   -s, --sub-langs TEXT            Languages of the subtitles to download.
   -o, --output-dir TEXT           Output directory where downloaded files will
                                   be store.
-  --help                          Show this message and exit.
+  --help                          Show this message in exit.
 ```
 
 Here are some examples:
 
 ### 🔗 Direct download entire series in highest quality available in current folder
 
-```console
-kisskh dl "https://kisskh.co/Drama/Island-Season-2?id=7000" -o .
+```bash
+uv run kisskh dl "https://kisskh.co/Drama/Island-Season-2?id=7000" -o .
 ```
-
-![Download all using URL](https://i.imgur.com/cvKYqK3.gif)
-
 
 ### 🔍 Search and download entire series in highest quality available in current folder
 
-```console
-kisskh dl "Stranger Things" -o .
+```bash
+uv run kisskh dl "Stranger Things" -o .
 1. Stranger Things - Season 4
 2. Stranger Things - Season 1
 3. Stranger Things - Season 2
@@ -65,30 +87,24 @@ kisskh dl "Stranger Things" -o .
 Please select one from above: 1
 ```
 
-![Download all using URL](https://i.imgur.com/mLPqjgj.gif)
-
 ### ⬇️ Download specific episodes with specific quality
 
 > :exclamation: Note that if the selected quality is not available, it will try to get something lower than that quality. If that also is not available, it will try to get the best quality available.
 
 Downloads episode 4 to 8 of `Alchemy of Souls` in 720p:
-```console
-kisskh dl "https://kisskh.co/Drama/Alchemy-of-Souls?id=5043" -f 4 -l 8 -q 720p -o .
+```bash
+uv run kisskh dl "https://kisskh.co/Drama/Alchemy-of-Souls?id=5043" -f 4 -l 8 -q 720p -o .
 ```
-
-![Download range of episodes](https://i.imgur.com/Q6697pa.gif)
 
 Downloads episode 3 of `A Business Proposal` in 720p:
-```console
-kisskh dl "https://kisskh.co/Drama/A-Business-Proposal?id=4608" -f 3 -l 3 -q 720p -o .
+```bash
+uv run kisskh dl "https://kisskh.co/Drama/A-Business-Proposal?id=4608" -f 3 -l 3 -q 720p -o .
 ```
 
-![Download single episode](https://i.imgur.com/cNlED8m.gif)
+You can also download single episode by providing the episode URL
 
-You can also dowload single episode by providing the episode URL
-
-```console
-kisskh dl "https://kisskh.co/Drama/A-Business-Proposal/Episode-3?id=4608&ep=86439&page=0&pageSize=100" -o .
+```bash
+uv run kisskh dl "https://kisskh.co/Drama/A-Business-Proposal/Episode-3?id=4608&ep=86439&page=0&pageSize=100" -o .
 ```
 
 For more options, use the `--help` flag.
@@ -100,7 +116,7 @@ If you want to decrypt the downloaded subtitles, you need to pass the `--decrypt
 Here is an example of how to pass these parameters from the command line:
 
 ```bash
-kisskh download "<drama_url>" --decrypt-subtitle --key "your_key_here" --initialization-vector "your_iv_here"
+uv run kisskh dl "<drama_url>" --decrypt-subtitle --key "your_key_here" --initialization-vector "your_iv_here"
 ```
 
 You can also set these parameters as environment variables. If you set the `KISSKH_KEY` and `KISSKH_INITIALIZATION_VECTOR` environment variables, they will be used by default.
@@ -124,23 +140,32 @@ set KISSKH_INITIALIZATION_VECTOR="your_iv_here"
 After setting these environment variables, you can use the `--decrypt-subtitle` flag without passing the key and initialization vector explicitly:
 
 ```bash
-kisskh download "Drama Name" --decrypt-subtitle
+uv run kisskh dl "Drama Name" --decrypt-subtitle
 ```
 
 Please make sure to replace `"your_key_here"` and `"your_iv_here"` with your actual decryption key and initialization vector.
 
 ---
 
-# 🐞 DEBUG
+## 🐞 DEBUG
 
 To enable debugging, use the `-vv` flag while running `kisskh dl`.
 
-```console
-kisskh -vv dl "https://kisskh.co/Drama/A-Business-Proposal?id=4608" -f 3 -l 3 -q 720p
+```bash
+uv run kisskh -vv dl "https://kisskh.co/Drama/A-Business-Proposal?id=4608" -f 3 -l 3 -q 720p
 ```
 
 ---
 
-# :construction: TODO
-- [ ] Add ability to export all download link
-- [ ] Add ability to open stream in some player
+## Development
+
+```bash
+# Install dependencies
+uv sync
+
+# Run tests
+uv run pytest tests/ -v
+
+# Update dependencies
+uv sync --upgrade
+```
