@@ -37,8 +37,21 @@ class Downloader:
                 "Accept": "*/*",
                 "Accept-Language": "en-US,en;q=0.9",
             },
+            "nocheckcertificate": True,
+            "no_warnings": True,
+            "quiet": False,
+            "extractor_retries": 10,
+            "fragment_retries": 10,
+            "skip_unavailable_fragments": False,
             "verbose": logger.getEffectiveLevel() == logging.DEBUG,
             "retries": 10,
+            "prefer_free_formats": True,
+            "allow_unplayable_formats": False,
+            "extractor_args": {
+                "generic": {
+                    "nocheckcertificate": True,
+                }
+            },
         }
         logger.debug(f"Calling download with following options: {ydl_opts}")
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:

@@ -102,8 +102,8 @@ def dl(
     )
 
     kisskh_api = KissKHApi()
-    downloader = Downloader(referer="https://kisskh.do")
     episode_ids: Dict[int, int] = {}
+    referer = "https://kisskh.co"
     if validators.url(drama_url_or_name):
         parsed_url = urlparse(drama_url_or_name)
         ids = parse_qs(parsed_url.query).get("id")
@@ -117,6 +117,7 @@ def dl(
         if episode_id and episode_number:
             episode_ids = {int(episode_number): int(episode_id[0])}
         drama_name = parsed_url.path.split("/")[2].replace("-", "_")
+        referer = f"https://kisskh.co{parsed_url.path}?id={ids[0]}"
     else:
         drama = kisskh_api.get_drama_by_query(drama_url_or_name)
         if drama is None:
@@ -124,6 +125,8 @@ def dl(
             return None
         drama_id = drama.id
         drama_name = drama.title
+
+    downloader = Downloader(referer=referer)
 
     if not episode_ids:
         episode_ids = kisskh_api.get_episode_ids(
