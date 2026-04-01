@@ -30,7 +30,13 @@ class Downloader:
             "format": f"bestvideo[height<={quality[:-1]}]+bestaudio/best[height<={quality[:-1]}]/best",
             "concurrent_fragment_downloads": 15,
             "outtmpl": f"{filepath}.%(ext)s",
-            "http_headers": {"Referer": self.referer},
+            "http_headers": {
+                "Referer": self.referer,
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+                "Origin": "https://kisskh.do",
+                "Accept": "*/*",
+                "Accept-Language": "en-US,en;q=0.9",
+            },
             "verbose": logger.getEffectiveLevel() == logging.DEBUG,
             "retries": 10,
         }
