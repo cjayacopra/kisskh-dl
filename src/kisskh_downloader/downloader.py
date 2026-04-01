@@ -33,7 +33,7 @@ class Downloader:
             "http_headers": {
                 "Referer": self.referer,
                 "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
-                "Origin": "https://kisskh.do",
+                "Origin": "https://kisskh.co",
                 "Accept": "*/*",
                 "Accept-Language": "en-US,en;q=0.9",
             },
@@ -47,10 +47,11 @@ class Downloader:
             "retries": 10,
             "prefer_free_formats": True,
             "allow_unplayable_formats": False,
+            "impersonate": "chrome",
             "extractor_args": {
                 "generic": {
                     "nocheckcertificate": True,
-                }
+                },
             },
         }
         logger.debug(f"Calling download with following options: {ydl_opts}")
